@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yk.ctrl.dao.DeviceDataDao">
+
+    <!--通过mac查询设备数据 -->
+    <select id="getDeviceData" parameterType="java.lang.String" resultType="java.lang.String">
+        select data1 from devicedata where mac=#{mac}
+    </select>
+
+</mapper>

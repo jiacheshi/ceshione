@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yk.ctrl.dao.UserDao">
+
+    <!--通过<resultMap>映射实体类属性名和表的字段名对应关系 -->
+    <resultMap type="com.yk.ctrl.entity.User" id="userMap">
+        <!-- 用id属性来映射主键字段 -->
+        <id property="id" column="id"/>
+        <!-- 用result属性来映射非主键字段 -->
+        <result property="uName" column="uname"/>
+        <result property="uPass" column="upass"/>
+        <result property="phoneNumber" column="phonenumber"/>
+        <result property="qq" column="qq"/>
+        <result property="weChat" column="wechat"/>
+        <result property="email" column="email"/>
+        <result property="mac" column="mac"/>
+    </resultMap>
+
+    <!--登录 -->
+    <select id="login" resultMap="userMap">
+        select * from `user` where uname = #{username} and upass=#{password}
+    </select>
+
+    <!--查询用户名是否重复-->
+    <select id="hintByName" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT id FROM `user` WHERE uname=#{username}
+    </select>
+
+    <!--注册用户-->
+    <insert id="register">
+        INSERT INTO `user`
+         (uname,upass,phonenumber,email)
+         VALUES
+        (#{userInfo.uName},#{userInfo.uPass},#{userInfo.phoneNumber},#{userInfo.email})
+    </insert>
+
+    <select id="checkUserDevices" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT mac FROM `user`
+        WHERE uname=#{username}
+    </select>
+
+    <!--把mac设备绑定到user上 -->
+    <update id="bindDeviceToUser" parameterType="java.lang.String">
+        UPDATE `user` SET mac=concat(mac,#{mac},',') WHERE uname=#{username}
+    </update>
+
+    <!--在用户中删除设备 -->
+    <update id="deleteDeviceFromUser" parameterType="String">
+        UPDATE `user` SET mac = REPLACE(mac,concat(#{mac},','),'') WHERE uname = #{username}
+    </update>
+
+</mapper>
+

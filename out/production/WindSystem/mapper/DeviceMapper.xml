@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yk.ctrl.dao.DeviceDao">
+
+    <!--查找mac地址的设备已绑定的用户名列表 -->
+    <select id="deviceBindedUser" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT binding FROM device
+        WHERE mac=#{mac}
+    </select>
+
+    <!--把user绑定到mac设备上-->
+    <update id="bindUserToDevice" parameterType="String">
+        UPDATE device SET binding=CONCAT(binding,#{username},','),nickname=#{nickname},adminpwd=#{password} WHERE mac=#{mac}
+    </update>
+
+    <!--&lt;!&ndash;通过mac查询设备信息&ndash;&gt;-->
+    <!--<select id="findUser" parameterType="String" resultType="Device">-->
+    <!--SELECT * FROM device WHERE mac=#{mac}-->
+    <!--</select>-->
+
+
+    <!--通过<resultMap>映射实体类属性名和表的字段名对应关系 -->
+    <resultMap type="com.yk.ctrl.entity.Device" id="DeviceMap">
+        <!-- 用id属性来映射主键字段 -->
+        <id property="mac" column="mac"/>
+        <!-- 用result属性来映射非主键字段 -->
+        <result property="nickname" column="nickname"/>
+        <result property="productKey" column="productKey"/>
+        <result property="deviceName" column="deviceName"/>
+        <result property="deviceSecret" column="deviceSecret"/>
+        <result property="adminpwd" column="adminpwd"/>
+        <result property="location" column="location"/>
+        <result property="binding" column="binding"/>
+    </resultMap>
+
+    <select id="selByMac" parameterType="java.lang.String" resultMap="DeviceMap">
+        SELECT * FROM device WHERE mac=#{mac}
+    </select>
+    <!--在设备中删除用户 -->
+    <update id="deleteUserFromDevice" parameterType="String">
+        UPDATE device SET binding = REPLACE(binding,concat(#{username},','),'') WHERE mac = #{mac}
+    </update>
+
+    <select id="getNicknameByMac" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT nickname FROM device where mac=#{mac}
+    </select>
+
+</mapper>
